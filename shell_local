@@ -1,5 +1,0 @@
-
-export EDITOR=vim
-export BROWSER=firefox-bin
-export PAGER="/usr/bin/less -isR"
-export TERM=rxvt-unicode

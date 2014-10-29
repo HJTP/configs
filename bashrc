@@ -1,172 +1,161 @@
+
 # Check for an interactive session
 [ -z "$PS1" ] && return
 
 shopt -s checkwinsize
-case "$OSTYPE" in
-    linux*)
-        eval $(dircolors -b)
-        shopt -s autocd
-    ;;
-esac
 
 shopt -s histappend
-export HISTSIZE=100000
-export HISTFILESIZE=100000
+export HISTSIZE=1000000
+export HISTFILESIZE=1000000
 export HISTCONTROL=ignoreboth
 
-# Search in history with up/down keys
-bind '"\e[A":history-search-backward'
-bind '"\e[B":history-search-forward'
+export EDITOR=vim
+export BROWSER=firefox
 
-#
-# Build a nice PS1 (prompt)
-#
-# Escape sequences for colors
+# Added because of ls sorting
+export LC_COLLATE=en_GB.UTF8
+
+# Sanoma software
+export PATH=$PATH:/home/floris/sanoma/mead/mead/bin
+# bama 2014
+export PATH=$PATH:/home/floris/bama/pintools/pin-2.14-67254-gcc.4.4.7-linux
+export PIN_HOME=/home/floris/bama/pintools/pin-2.14-67254-gcc.4.4.7-linux
+
+# Fix some autocomplete stuff
+# With foxitreader selected, only show pdf files
+_xspecs[foxitreader]='!*.@(pdf)'
+complete -F _filedir_xspec foxitreader
+# With love selected, only show love files
+_xspecs[love]='!*.@(love)'
+complete -F _filedir_xspec love
+# With coolreader selected, only show epub files
+_xspecs[coolreader]='!*.@(epub)'
+complete -F _filedir_xspec coolreader
+# With fbreader selected, only show epuc files
+_xspecs[fbreader]='!*.@(epub)'
+complete -F _filedir_xspec fbreader
+
+RED="\[\e[1;31m\]"
+GREEN="\[\e[1;32m\]"
+BLUE="\[\e[1;34m\]"
+CYAN="\[\e[1;36m\]"
+YELLOW="\[\e[1;93m\]"
 RESET_COL="\[\e[0m\]"
 
-# These are all bold/hi-intensity versions
-BLACK="\[\e[1;90m\]"
-RED="\[\e[1;91m\]"
-GREEN="\[\e[1;92m\]"
-YELLOW="\[\e[1;93m\]"
-BLUE="\[\e[1;94m\]"
-PURPLE="\[\e[1;95m\]"
-CYAN="\[\e[1;96m\]"
-WHITE="\[\e[1;97m\]"
 
-# 'light' version of colors: no bold and/or darker
-RED_S="\[\e[0;31m\]"
-GREEN_D="\[\e[1;32m\]"
-YELLOW_D="\[\e[1;33m\]"
-
-# Determine color for user
 user_col=${GREEN}
-if [ ${EUID} -eq 0 ]; then
-    # Root
+if [ $UID -eq 0 ]; then
     user_col=${RED}
-elif [[ ${USER} != "$(logname 2>/dev/null)" ]]; then
-    # Different user (e.g. after su)
-    user_col=${PURPLE}
 fi
 
-# Determine what to display as hostname (and color)
 hname=""
-if [[ "${HOSTNAME}" == "koeserv" ]]; then
-    hname="$CYAN@koeserv"
+if [[ "${HOSTNAME}" == "raspi" ]]; then
+    hname="$CYAN@raspi"
 elif [[ "${HOSTNAME}" == "sremote" || "${HOSTNAME}" == "deze" ||
-    "${USER}" == "koenk" ]]; then
+    "${USER}" == "ftkroon" ]]; then
     hname="$YELLOW@UvA"
-elif [[ "${USER}" == "kkoning" ]]; then
-    hname="$BLUE@DAS4,${HOSTNAME}"
-elif [[ "$(who am i | awk '{print $5}')" != "" ]]; then
-    # Hacky way of detecting ssh (env vars won't work when su'ing)
-    hname="$WHITE@$HOSTNAME"
 fi
 
-# Git functions (mostly from https://github.com/nojhan/liquidprompt/)
-# Determines the branch of the current directory, if this is a git repo
-git_get_branch() {
-    local gitdir="$(git rev-parse --git-dir 2>/dev/null)"
-    [[ $? -ne 0 || ! $gitdir =~ (.*\/)?\.git.* ]] && return
-    local branch="$(git symbolic-ref HEAD 2>/dev/null)"
-    if [[ $? -ne 0 || -z "$branch" ]]; then
-        # In detached head state, use commit instead
-        branch="$(git rev-parse --short HEAD 2>/dev/null)"
-    fi
-    [[ $? -ne 0 || -z "$branch" ]] && return
-    branch="${branch#refs/heads/}"
-    echo "$branch"
+
+PS1="$user_col\u$hname $BLUE\w $GREEN\$ $RESET_COL"
+
+eval $(dircolors -b)
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+alias lls='ls -lhAS'
+alias ll='ls -lhA'
+alias l='ls'
+alias la='ls -a'
+alias grep='grep -i'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias df='df -h'
+alias du='du -c -h'
+alias locate='locate -i'
+alias gs='git status'
+alias ack='ack -i'
+
+alias more='less'
+alias hist='history|grep $1'
+alias da='date "+%A, %B, %d, %Y [%T]"'
+alias dul='du --max-depth=1 | sort -h'
+alias tmux='tmux -2' # Forces 256 color
+alias airmon='airmon-ng start wlan0'
+alias airmonstop='airmon-ng stop wlan0'
+alias coolreader='cr3'
+alias fbreader='FBReader'
+
+alias af='cd /home/floris/Afstudeerproject/python'
+alias the='cd /home/floris/Afstudeerproject/thesis'
+
+if [ $UID -ne 0 ]; then
+	alias reboot='sudo reboot'
+	alias poweroff='sudo poweroff'
+	alias update='sudo pacman -Su'
+	alias pacman='sudo pacman'
+    alias airmon-ng='sudo airmon-ng'
+    alias pkill='sudo pkill'
+    alias wireshark='sudo wireshark'
+    alias umount='sudo umount'
+    alias iotop='sudo iotop'
+    alias xampp='sudo xampp'
+    alias pip2='sudo pip2'
+    alias pip='sudo pip'
+fi
+
+alias sshuva='ssh ftkroon@sremote.science.uva.nl'
+alias sshraspi='ssh thuis.floriskroon.nl -p 22220'
+alias sshraspilocal='ssh 192.168.178.99 -p 22220'
+alias sshdasvu='ssh fkn780@fs0.das4.cs.vu.nl -X'
+alias sshdasuva='ssh fkroon@fs0.das4.cs.vu.nl -X'
+alias sshkoeserv='ssh home.chozo.nl -p 22222'
+alias sshsangkil='ssh floris@sangkil.science.uva.nl -p 8099'
+
+alias vbox='virtualbox'
+alias secondscreenon='xrandr --output VGA1 --auto && xrandr --output LVDS1 --below VGA1'
+alias secondscreenoff='xrandr --output VGA1 --off'
+alias fixwifi='nmcli radio wifi on'
+
+
+# Find a specific string IN a file (in all subdirs)
+function findif() {
+  find . -exec grep -n "$@" "{}" \; -print
 }
 
-# Determines whather there are uncommited changes in the current directory
-git_has_changes() {
-    local GD
-    git diff --quiet >/dev/null 2>&1
-    GD=$?
-
-    local GDC
-    git diff --cached --quiet >/dev/null 2>&1
-    GDC=$?
-
-    if [[ "$GD" -eq 1 || "$GDC" -eq 1 ]]; then
-        echo -ne "1"
-    fi
+# mkdir & cd into it
+function mc() {
+  mkdir -p "$*" && cd "$*" && pwd
 }
 
-# Determines whether there are unpushed commits in the current directory
-git_has_commits() {
-    local branch
-    branch=$(git_get_branch)
-    if [[ -z "$branch" ]]; then
-        return
-    fi
-
-    local remote
-    remote="$(git config --get branch.${branch}.remote 2>/dev/null)"
-    # If git has no upstream, use origin
-    if [[ -z "$remote" ]]; then
-        remote="origin"
-    fi
-    local remote_branch
-    remote_branch="$(git config --get branch.${branch}.merge 2>/dev/null)"
-    # Without any remote branch, use the same name
-    if [[ -z "$remote_branch" ]]; then
-        remote_branch="$branch"
-    else
-        remote_branch="$(basename "$remote_branch")"
-    fi
-
-    if [[ -n "$remote" && -n "$remote_branch" ]]; then
-        local commits=$(git rev-list --no-merges --count $remote/${remote_branch}..${branch} 2>/dev/null)
-        if [[ "$commits" -gt 0 ]]; then
-            echo -ne "1"
-        fi
-    fi
+# cd & ll
+#alias lc="cl"
+function cl () {
+   if [ $# = 0 ]; then
+      cd && ll
+   else
+      cd "$*" && ll
+   fi
 }
 
-# Function called every time prompt is shown, so current working dir can be
-# taken into account
-generate_prompt() {
-    # Append red ! to path if no write perms in this dir
-    local writeperms=""
-    if [[ ! -w "$PWD" ]]; then
-        writeperms="${RED_S}!"
-    fi
-
-    # Number of sleeping jobs (when Ctrl-Z was pressed)
-    local stopped=$(jobs -s | wc -l | tr -d ' ')
-    if [ $stopped -eq 0 ]; then
-        stopped=""
-    else
-        stopped="$WHITE$stopped "
-    fi
-
-    # Git branch and status
-    local git=""
-    local git_branch=$(git_get_branch)
-    if [[ ! -z "$git_branch" ]]; then
-        local git_changes=$(git_has_changes)
-        if [[ ! -z "$git_changes" ]]; then
-            git=" $YELLOW_D"
+extract () {
+    if [ -f $1 ] ; then
+        case $1 in
+                *.tar.bz2) tar xjf $1 ;;
+                *.tar.gz) tar xzf $1 ;;
+                *.bz2) bunzip2 $1 ;;
+                *.rar) unrar e $1 ;;
+                *.gz) gunzip $1 ;;
+                *.tar) tar xf $1 ;;
+                *.tbz2) tar xjf $1 ;;
+                *.tgz) tar xzf $1 ;;
+                *.zip) unzip $1 ;;
+                *.Z) uncompress $1 ;;
+                *.7z) 7z x $1 ;;
+                *) echo "'$1' cannot be extracted via extract()" ;;
+                 esac
         else
-            git=" $GREEN_D"
-        fi
-        git="$git[$git_branch"
-
-        local git_commits=$(git_has_commits)
-        if [[ ! -z "$git_commits" ]]; then
-            git="$git^"
-        fi
-
-        git="$git]"
-    fi
-
-    PS1="$user_col\u$hname $BLUE\w$writeperms$git $stopped$GREEN\$ $RESET_COL"
+        echo "'$1' is not a valid file"
+     fi
 }
-PROMPT_COMMAND=generate_prompt
-
-# Load aliasses etc shared with bash
-source $HOME/.shell_aliasses
-
-# Load machine-local stuff (e.g. env vars)
-source $HOME/.shell_local

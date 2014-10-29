@@ -32,16 +32,16 @@ function do_install() {
 }
 
 # Install oh-my-zsh (to ~/.oh-my-zsh)
-curl -L http://install.ohmyz.sh | sh
+# curl -L http://install.ohmyz.sh | sh
 
 # Symlink(/copy) files
 do_install "bashrc" ".bashrc"
-do_install "zshrc" ".zshrc"
-do_install "shell_aliasses" ".shell_aliasses"
-do_install "shell_local" ".shell_local" "copy instead of symlink"
+# do_install "zshrc" ".zshrc"
+# do_install "shell_aliasses" ".shell_aliasses"
+# do_install "shell_local" ".shell_local" "copy instead of symlink"
 do_install "vimrc" ".vimrc"
 do_install "vim" ".vim"
-do_install "Xresources" ".Xresources"
-do_install "awesome_rc.lua" ".config/awesome/rc.lua"
-do_install "gitconfig" ".gitconfig"
+# do_install "Xresources" ".Xresources"
+# do_install "awesome_rc.lua" ".config/awesome/rc.lua"
+# do_install "gitconfig" ".gitconfig"
 
