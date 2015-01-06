@@ -54,6 +54,9 @@ if [[ "${HOSTNAME}" == "raspi" ]]; then
 elif [[ "${HOSTNAME}" == "sremote" || "${HOSTNAME}" == "deze" ||
     "${USER}" == "ftkroon" ]]; then
     hname="$YELLOW@UvA"
+elif [[ "${HOSTNAME:0:2}" == "in" ]]; then
+    number="${HOSTNAME:2}"
+    hname="$YELLOW@webdb$number"
 fi
 
 
