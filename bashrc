@@ -54,9 +54,9 @@ if [[ "${HOSTNAME}" == "raspi" ]]; then
 elif [[ "${HOSTNAME}" == "sremote" || "${HOSTNAME}" == "deze" ||
     "${USER}" == "ftkroon" ]]; then
     hname="$YELLOW@UvA"
-elif [[ "${HOSTNAME:0:2}" == "in" ]]; then
-    number="${HOSTNAME:2}"
-    hname="$YELLOW@webdb$number"
+elif [[ "$(who am i | awk '{print $5}')" != "" ]]; then
+    # Hacky way of detecting ssh (env vars won't work when su'ing)
+    hname="$WHITE@$HOSTNAME"
 fi
 
 
@@ -116,11 +116,19 @@ alias sshdasuva='ssh fkroon@fs0.das4.cs.vu.nl -X'
 alias sshkoeserv='ssh home.chozo.nl -p 22222'
 alias sshsangkil='ssh floris@sangkil.science.uva.nl -p 8099'
 
+# Webprog 2015
+alias sshwebprog1="ssh -p 4004 floris@in04.webdb.fnwi.uva.nl"
+alias sshwebprog2="ssh -p 4005 floris@in05.webdb.fnwi.uva.nl"
+alias sshwebprog3="ssh -p 4008 floris@in08.webdb.fnwi.uva.nl"
+alias sshwebprog4="ssh -p 4011 floris@in11.webdb.fnwi.uva.nl"
+
 alias vbox='virtualbox'
 alias secondscreenon='xrandr --output VGA1 --auto && xrandr --output LVDS1 --below VGA1'
 alias secondscreenoff='xrandr --output VGA1 --off'
 alias fixwifi='nmcli radio wifi on'
 
+bind '"\e[A":history-search-backward'
+bind '"\e[B":history-search-forward'
 
 # Find a specific string IN a file (in all subdirs)
 function findif() {
@@ -162,3 +170,8 @@ extract () {
         echo "'$1' is not a valid file"
      fi
 }
+
+
+
+# PCS 2014
+source /etc/profile.d/chplenv.sh
