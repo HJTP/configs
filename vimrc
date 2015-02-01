@@ -126,3 +126,6 @@ imap <right> <nop>
 " Disable F1
 map <F1> <nop>
 imap <F1> <nop>
+
+" Disable record macro
+map q <nop>

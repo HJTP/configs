@@ -64,6 +64,8 @@ check_git() {
         GIT=${GIT:10}
         if [[ -n $(git status | grep "not staged") ]]; then
             GIT=$RED$GIT
+        elif [[ -n $(git status | grep "to be committed") ]]; then
+            GIT=$YELLOW$GIT
         else
             GIT=$GREEN$GIT
         fi
