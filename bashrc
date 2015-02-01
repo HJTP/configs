@@ -16,7 +16,7 @@ export BROWSER=firefox
 export LC_COLLATE=en_GB.UTF8
 
 # Sanoma software
-export PATH=$PATH:/home/floris/sanoma/mead/mead/bin
+# export PATH=$PATH:/home/floris/sanoma/mead/mead/bin
 # bama 2014
 export PATH=$PATH:/home/floris/bama/pintools/pin-2.14-67254-gcc.4.4.7-linux
 export PIN_HOME=/home/floris/bama/pintools/pin-2.14-67254-gcc.4.4.7-linux
@@ -39,6 +39,7 @@ RED="\[\e[1;31m\]"
 GREEN="\[\e[1;32m\]"
 BLUE="\[\e[1;34m\]"
 CYAN="\[\e[1;36m\]"
+WHITE="\[\e[1;37m\]"
 YELLOW="\[\e[1;93m\]"
 RESET_COL="\[\e[0m\]"
 
@@ -51,14 +52,9 @@ fi
 hname=""
 if [[ "${HOSTNAME}" == "raspi" ]]; then
     hname="$CYAN@raspi"
-elif [[ "${HOSTNAME}" == "sremote" || "${HOSTNAME}" == "deze" ||
-    "${USER}" == "ftkroon" ]]; then
-    hname="$YELLOW@UvA"
-elif [[ "$(who am i | awk '{print $5}')" != "" ]]; then
-    # Hacky way of detecting ssh (env vars won't work when su'ing)
+elif [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
     hname="$WHITE@$HOSTNAME"
 fi
-
 
 PS1="$user_col\u$hname $BLUE\w $GREEN\$ $RESET_COL"
 
@@ -90,20 +86,13 @@ alias airmonstop='airmon-ng stop wlan0'
 alias coolreader='cr3'
 alias fbreader='FBReader'
 
-alias af='cd /home/floris/Afstudeerproject/python'
-alias the='cd /home/floris/Afstudeerproject/thesis'
-
 if [ $UID -ne 0 ]; then
 	alias reboot='sudo reboot'
 	alias poweroff='sudo poweroff'
-	alias update='sudo pacman -Su'
 	alias pacman='sudo pacman'
-    alias airmon-ng='sudo airmon-ng'
     alias pkill='sudo pkill'
-    alias wireshark='sudo wireshark'
     alias umount='sudo umount'
     alias iotop='sudo iotop'
-    alias xampp='sudo xampp'
     alias pip2='sudo pip2'
     alias pip='sudo pip'
 fi
@@ -122,7 +111,6 @@ alias sshwebprog2="ssh -p 4005 floris@in05.webdb.fnwi.uva.nl"
 alias sshwebprog3="ssh -p 4008 floris@in08.webdb.fnwi.uva.nl"
 alias sshwebprog4="ssh -p 4011 floris@in11.webdb.fnwi.uva.nl"
 
-alias vbox='virtualbox'
 alias secondscreenon='xrandr --output VGA1 --auto && xrandr --output LVDS1 --below VGA1'
 alias secondscreenoff='xrandr --output VGA1 --off'
 alias fixwifi='nmcli radio wifi on'
