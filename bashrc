@@ -56,7 +56,22 @@ elif [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
     hname="$WHITE@$HOSTNAME"
 fi
 
-PS1="$user_col\u$hname $BLUE\w $GREEN\$ $RESET_COL"
+check_git() {
+    # Git stuff
+    GIT=""
+    if [[ ! -n $(git status 2>&1 | grep "fatal") ]]; then
+        GIT=$(git status | head -n 1)
+        GIT=${GIT:10}
+        if [[ -n $(git status | grep "not staged") ]]; then
+            GIT=$RED$GIT
+        else
+            GIT=$GREEN$GIT
+        fi
+        GIT="($GIT$BLUE) "
+    fi
+
+    PS1="$user_col\u$hname $BLUE\w $GIT$GREEN\$ $RESET_COL"
+}
 
 eval $(dircolors -b)
 
@@ -163,3 +178,5 @@ extract () {
 
 # PCS 2014
 source /etc/profile.d/chplenv.sh
+
+PROMPT_COMMAND=check_git
