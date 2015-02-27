@@ -48,6 +48,13 @@ elif [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
     hname="$WHITE@$HOSTNAME"
 fi
 
+screen=""
+if [ -n "$STY" ]; then
+    screen="$CYAN{screen} "
+elif [ -n "$TMUX" ]; then
+    screen="$CYAN{tmux} "
+fi
+
 check_git() {
     # Git stuff
     GIT=""
@@ -64,7 +71,7 @@ check_git() {
         GIT="($GIT$BLUE) "
     fi
 
-    PS1="$user_col\u$hname $BLUE\w $GIT$GREEN\$ $RESET_COL"
+    PS1="$user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
 }
 
 eval $(dircolors -b)
@@ -145,3 +152,5 @@ extract () {
 }
 
 PROMPT_COMMAND=check_git
+
+export PATH=$PATH:/home/floris/bewenakijken/assignment1
