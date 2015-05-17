@@ -48,6 +48,10 @@ set novisualbell " Don't flash screen
 set t_vb=
 set tm=500
 
+" 2015-05-17 keep undo buffer in between restarts of vim
+set undofile
+set undodir=~/.vim/undodir
+
 " Searching
 set incsearch " Incremental search
 set ignorecase
