@@ -71,7 +71,12 @@ check_git() {
         GIT="($GIT$BLUE) "
     fi
 
-    PS1="$user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
+	VIRTENV=""
+	if [[ -n "$VIRTUAL_ENV" ]]; then
+		VIRTENV="$YELLOW{$(basename $VIRTUAL_ENV)} "
+	fi
+
+    PS1="$user_col\u$hname $screen$BLUE\w $VIRTENV$BLUE$GIT$GREEN\$ $RESET_COL"
 }
 
 eval $(dircolors -b)
