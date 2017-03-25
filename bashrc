@@ -116,12 +116,6 @@ if [ $UID -ne 0 ]; then
     alias tcpdump='sudo tcpdump'
 fi
 
-alias sshraspi='ssh thuis.floriskroon.nl -p 22220'
-alias sshraspilocal='ssh 192.168.178.99 -p 22220'
-alias sshdasvu='ssh fkn780@fs0.das4.cs.vu.nl -X'
-alias sshdasuva='ssh fkroon@fs0.das4.cs.vu.nl -X'
-alias sshsangkil='ssh floris@sangkil.science.uva.nl -p 8099'
-
 alias secondscreenon='xrandr --output VGA1 --auto && sleep 5 && xrandr --output LVDS1 --below VGA1'
 alias secondscreenoff='xrandr --output VGA1 --off'
 alias fixwifi='nmcli radio wifi on'
@@ -157,5 +151,3 @@ extract () {
 }
 
 PROMPT_COMMAND=check_git
-
-export PATH=$PATH:/home/floris/bewenakijken/assignment1
