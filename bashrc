@@ -77,6 +77,7 @@ check_git() {
 	fi
 
     PS1="$user_col\u$hname $screen$BLUE\w $VIRTENV$BLUE$GIT$GREEN\$ $RESET_COL"
+    PS1="${WHITE}[\D{%F %T}] $user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
 }
 
 eval $(dircolors -b)
