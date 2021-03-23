@@ -55,6 +55,14 @@ elif [ -n "$TMUX" ]; then
     screen="$CYAN{tmux} "
 fi
 
+function set_virtualenv () {
+	if test -z "$VIRTUAL_ENV" ; then
+		PYTHON_VIRTUALENV=""
+	else
+        PYTHON_VIRTUALENV="${BLUE}(`basename \"$VIRTUAL_ENV\"`)${COLOR_NONE} "
+	fi
+}
+
 check_git() {
     # Git stuff
     GIT=""
@@ -71,13 +79,9 @@ check_git() {
         GIT="($GIT$BLUE) "
     fi
 
-	VIRTENV=""
-	if [[ -n "$VIRTUAL_ENV" ]]; then
-		VIRTENV="$YELLOW{$(basename $VIRTUAL_ENV)} "
-	fi
+	set_virtualenv
 
-    PS1="$user_col\u$hname $screen$BLUE\w $VIRTENV$BLUE$GIT$GREEN\$ $RESET_COL"
-    PS1="${WHITE}[\D{%F %T}] $user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
+    PS1="${WHITE}[\D{%F %T}] ${PYTHON_VIRTUALENV}$user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
 }
 
 eval $(dircolors -b)
@@ -112,14 +116,24 @@ if [ $UID -ne 0 ]; then
     alias pkill='sudo pkill'
     alias umount='sudo umount'
     alias iotop='sudo iotop'
-    alias pip2='sudo pip2'
-    alias pip='sudo pip'
     alias tcpdump='sudo tcpdump'
 fi
 
 alias secondscreenon='xrandr --output VGA1 --auto && sleep 5 && xrandr --output LVDS1 --below VGA1'
 alias secondscreenoff='xrandr --output VGA1 --off'
 alias fixwifi='nmcli radio wifi on'
+
+alias pytest='pytest --color=yes'
+
+alias teva='terraform validate'
+alias teinitdev='terraform init -backend-config=backend.s3.dev.conf'
+alias teinitprod='terraform init -backend-config=backend.s3.prod.conf'
+alias tepladev='terraform plan -state=backend.s3.dev.conf -out=plan.tfplan -var-file=tfvars-dev.tfvars'
+alias teplaprod='terraform plan -state=backend.s3.prod.conf -out=plan.tfplan -var-file=tfvars-prd.tfvars'
+
+function grp() {
+  grep -irn . --exclude-dir={node_modules,.git,.idea,dist,venv,venv_alembic} -e "$1"
+}
 
 # Used to be in inputrc
 bind '"\e[A":history-search-backward'
