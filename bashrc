@@ -38,50 +38,50 @@ RESET_COL="\[\e[0m\]"
 
 user_col=${GREEN}
 if [ $UID -eq 0 ]; then
-    user_col=${RED}
+  user_col=${RED}
 fi
 
 hname=""
 if [[ "${HOSTNAME}" == "raspi" ]]; then
-    hname="$CYAN@raspi"
+  hname="$CYAN@raspi"
 elif [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-    hname="$WHITE@$HOSTNAME"
+  hname="$WHITE@$HOSTNAME"
 fi
 
 screen=""
 if [ -n "$STY" ]; then
-    screen="$CYAN{screen} "
+  screen="$CYAN{screen} "
 elif [ -n "$TMUX" ]; then
-    screen="$CYAN{tmux} "
+  screen="$CYAN{tmux} "
 fi
 
 function set_virtualenv () {
-	if test -z "$VIRTUAL_ENV" ; then
-		PYTHON_VIRTUALENV=""
-	else
-        PYTHON_VIRTUALENV="${BLUE}(`basename \"$VIRTUAL_ENV\"`)${COLOR_NONE} "
-	fi
+  if test -z "$VIRTUAL_ENV" ; then
+    PYTHON_VIRTUALENV=""
+  else
+    PYTHON_VIRTUALENV="${BLUE}(`basename \"$VIRTUAL_ENV\"`)${COLOR_NONE} "
+  fi
 }
 
 check_git() {
-    # Git stuff
-    GIT=""
-    if [[ ! -n $(git status 2>&1 | grep "fatal") ]]; then
-        GIT=$(git status | head -n 1)
-        GIT=${GIT:10}
-        if [[ -n $(git status | grep "not staged") ]]; then
-            GIT=$RED$GIT
-        elif [[ -n $(git status | grep "to be committed") ]]; then
-            GIT=$YELLOW$GIT
-        else
-            GIT=$GREEN$GIT
-        fi
-        GIT="($GIT$BLUE) "
+  # Git stuff
+  GIT=""
+  if [[ ! -n $(git status 2>&1 | grep "fatal") ]]; then
+    GIT=$(git status | head -n 1)
+    GIT=${GIT:10}
+    if [[ -n $(git status | grep "not staged") ]]; then
+      GIT=$RED$GIT
+    elif [[ -n $(git status | grep "to be committed") ]]; then
+      GIT=$YELLOW$GIT
+    else
+      GIT=$GREEN$GIT
     fi
+    GIT="($GIT$BLUE) "
+  fi
 
-	set_virtualenv
+  set_virtualenv
 
-    PS1="${WHITE}[\D{%F %T}] ${PYTHON_VIRTUALENV}$user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
+  PS1="${WHITE}[\D{%F %T}] ${PYTHON_VIRTUALENV}$user_col\u$hname $screen$BLUE\w $GIT$GREEN\$ $RESET_COL"
 }
 
 eval $(dircolors -b)
@@ -110,13 +110,13 @@ alias fbreader='FBReader'
 alias info='info --vi-keys'
 
 if [ $UID -ne 0 ]; then
-	alias reboot='sudo reboot'
-	alias poweroff='sudo poweroff'
-	alias pacman='sudo pacman'
-    alias pkill='sudo pkill'
-    alias umount='sudo umount'
-    alias iotop='sudo iotop'
-    alias tcpdump='sudo tcpdump'
+  alias reboot='sudo reboot'
+  alias poweroff='sudo poweroff'
+  alias pacman='sudo pacman'
+  alias pkill='sudo pkill'
+  alias umount='sudo umount'
+  alias iotop='sudo iotop'
+  alias tcpdump='sudo tcpdump'
 fi
 
 alias secondscreenon='xrandr --output VGA1 --auto && sleep 5 && xrandr --output LVDS1 --below VGA1'
@@ -145,24 +145,24 @@ function mc() {
 }
 
 extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-                *.tar.bz2) tar xjf $1 ;;
-                *.tar.gz) tar xzf $1 ;;
-                *.bz2) bunzip2 $1 ;;
-                *.rar) unrar e $1 ;;
-                *.gz) gunzip $1 ;;
-                *.tar) tar xf $1 ;;
-                *.tbz2) tar xjf $1 ;;
-                *.tgz) tar xzf $1 ;;
-                *.zip) unzip $1 ;;
-                *.Z) uncompress $1 ;;
-                *.7z) 7z x $1 ;;
-                *) echo "'$1' cannot be extracted via extract()" ;;
-                 esac
-        else
-        echo "'$1' is not a valid file"
-     fi
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2) tar xjf $1 ;;
+      *.tar.gz) tar xzf $1 ;;
+      *.bz2) bunzip2 $1 ;;
+      *.rar) unrar e $1 ;;
+      *.gz) gunzip $1 ;;
+      *.tar) tar xf $1 ;;
+      *.tbz2) tar xjf $1 ;;
+      *.tgz) tar xzf $1 ;;
+      *.zip) unzip $1 ;;
+      *.Z) uncompress $1 ;;
+      *.7z) 7z x $1 ;;
+      *) echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
 }
 
 PROMPT_COMMAND=check_git
