@@ -98,6 +98,9 @@ alias df='df -h'
 alias du='du -c -h'
 alias locate='locate -i'
 alias gs='git status'
+alias gd='git diff'
+alias gb='git for-each-ref --sort=committerdate refs/heads/ --format="%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))"'
+alias gitcleanup="git remote prune origin && git branch -vv | grep ': gone]' | grep -v \"\*\" | awk '{print \$1; }'"
 alias ack='ack -i'
 
 alias more='less'
